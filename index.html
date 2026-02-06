@@ -2,44 +2,763 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Eight-endance</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eight-Tendence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--surface-light);
+        }
+
+        .progress-section {
+            text-align: center;
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .current-month {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .quota-info {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .progress-ring-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: var(--surface-light);
+            stroke-width: 12;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .progress-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background: var(--surface-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: var(--surface-light);
+        }
+
+        button.secondary:hover {
+            background: #475569;
+        }
+
+        button.success {
+            background: var(--success);
+        }
+
+        button.success:hover {
+            background: #059669;
+        }
+
+        button.danger {
+            background: var(--danger);
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .date-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .date-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--surface-light);
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--success);
+        }
+
+        .date-item.holiday {
+            border-left-color: var(--warning);
+        }
+
+        .date-item.vacation {
+            border-left-color: var(--danger);
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-day {
+            font-weight: 600;
+        }
+
+        .date-type {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: capitalize;
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: var(--danger);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--surface-light);
+            border: 1px solid var(--surface-light);
+            color: var(--text);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .type-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .type-option {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--surface-light);
+            border: 2px solid transparent;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .type-option.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .type-option.attendance.active {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .type-option.holiday.active {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .type-option.vacation.active {
+            border-color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 200;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .progress-ring-container {
+                width: 160px;
+                height: 160px;
+            }
+
+            .progress-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Eight-endance</h1>
+    <div class="container">
+        <header>
+            <h1>Eight-Tendence</h1>
+            <p class="subtitle">Office attendance tracker • 8 days per month</p>
+        </header>
 
-    <section class="actions">
-        <button id="checkInBtn">Check In Today</button>
+        <div class="card progress-section">
+            <div class="month-header">
+                <span class="current-month" id="currentMonth">Loading...</span>
+                <span class="quota-info" id="quotaInfo">Quota: 8 days</span>
+            </div>
 
-        <div class="input-group">
-            <label>Add Past Date:</label>
-            <input type="date" id="pastDateInput">
-            <button id="addPastDateBtn">Add</button>
+            <div class="progress-ring-container">
+                <svg class="progress-ring" width="200" height="200">
+                    <circle class="progress-ring-bg" cx="100" cy="100" r="88"></circle>
+                    <circle class="progress-ring-fill" cx="100" cy="100" r="88"
+                            stroke-dasharray="552.92" stroke-dashoffset="552.92" id="progressCircle"></circle>
+                </svg>
+                <div class="progress-text">
+                    <div class="progress-number" id="progressNumber">0</div>
+                    <div class="progress-label" id="progressLabel">of 8 days</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="attendanceCount">0</div>
+                    <div class="stat-label">Attended</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="holidayCount" style="color: var(--warning)">0</div>
+                    <div class="stat-label">Holidays</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="vacationCount" style="color: var(--danger)">0</div>
+                    <div class="stat-label">Vacation</div>
+                </div>
+            </div>
         </div>
 
-        <div class="input-group">
-            <label>Add Holiday/Vacation:</label>
-            <input type="number" id="holidayCount" min="1" placeholder="Number of days">
-            <button id="addHolidayBtn">Apply</button>
+        <div class="card">
+            <div class="section-title">Quick Actions</div>
+            <div class="actions">
+                <button class="success" onclick="checkInToday()">
+                    <span>✓</span> Check In Today
+                </button>
+                <button class="secondary" onclick="openModal('add')">
+                    <span>+</span> Add Past Date
+                </button>
+                <button class="secondary" onclick="openModal('exclude')">
+                    <span>−</span> Add Holiday/Vacation
+                </button>
+            </div>
         </div>
-    </section>
 
-    <section class="progress">
-        <h2>This Month's Progress</h2>
-        <div id="progressBarContainer">
-            <div id="progressBar"></div>
+        <div class="card">
+            <div class="section-title">This Month's History</div>
+            <div class="date-list" id="dateList">
+                <div class="empty-state">No entries yet this month</div>
+            </div>
         </div>
-        <p id="progressText"></p>
-    </section>
+    </div>
 
-    <section class="attendance-list">
-        <h2>Days Attended</h2>
-        <ul id="attendanceList"></ul>
-   ="export">
-        <button id="exportPdfBtn">Export PDF Summary</button>
-    </section>
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">Add Entry</div>
 
-    pdf.js</script>
-    app.js</script>
+            <div class="form-group">
+                <label>Select Date</label>
+                <input type="date" id="dateInput" max="">
+            </div>
+
+            <div id="typeSelector" style="display: none;">
+                <label>Type</label>
+                <div class="type-selector">
+                    <div class="type-option holiday" data-type="holiday" onclick="selectType('holiday')">Holiday</div>
+                    <div class="type-option vacation" data-type="vacation" onclick="selectType('vacation')">Vacation</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="secondary" onclick="closeModal()">Cancel</button>
+                <button onclick="confirmAdd()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">Action completed</div>
+
+    <script>
+        // Data structure
+        const DB_KEY = 'eightTendence_data';
+        const BASE_QUOTA = 8;
+
+        let currentData = {};
+        let modalMode = 'add'; // 'add' or 'exclude'
+        let selectedType = 'holiday';
+
+        // Initialize
+        function init() {
+            loadData();
+            updateUI();
+
+            // Set max date to today for inputs
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateInput').max = today;
+        }
+
+        function getCurrentMonthKey() {
+            const now = new Date();
+            return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        }
+
+        function getMonthName() {
+            const now = new Date();
+            return now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem(DB_KEY);
+            if (stored) {
+                currentData = JSON.parse(stored);
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem(DB_KEY, JSON.stringify(currentData));
+        }
+
+        function getCurrentMonthData() {
+            const key = getCurrentMonthKey();
+            if (!currentData[key]) {
+                currentData[key] = {
+                    attendance: [],
+                    exclusions: []
+                };
+            }
+            return currentData[key];
+        }
+
+        function updateUI() {
+            const monthKey = getCurrentMonthKey();
+            const monthData = getCurrentMonthData();
+
+            // Update header
+            document.getElementById('currentMonth').textContent = getMonthName();
+
+            // Calculate stats
+            const attendance = monthData.attendance || [];
+            const exclusions = monthData.exclusions || [];
+            const holidays = exclusions.filter(e => e.type === 'holiday').length;
+            const vacations = exclusions.filter(e => e.type === 'vacation').length;
+            const totalExclusions = holidays + vacations;
+            const adjustedQuota = Math.max(0, BASE_QUOTA - totalExclusions);
+
+            // Update stats
+            document.getElementById('attendanceCount').textContent = attendance.length;
+            document.getElementById('holidayCount').textContent = holidays;
+            document.getElementById('vacationCount').textContent = vacations;
+
+            // Update quota info
+            if (totalExclusions > 0) {
+                document.getElementById('quotaInfo').textContent = `Quota: ${adjustedQuota} days (8 - ${totalExclusions} excluded)`;
+                document.getElementById('progressLabel').textContent = `of ${adjustedQuota} days`;
+            } else {
+                document.getElementById('quotaInfo').textContent = 'Quota: 8 days';
+                document.getElementById('progressLabel').textContent = 'of 8 days';
+            }
+
+            // Update progress ring
+            const progress = Math.min(attendance.length / (adjustedQuota || 1), 1);
+            const circumference = 2 * Math.PI * 88; // r=88
+            const offset = circumference - (progress * circumference);
+            document.getElementById('progressCircle').style.strokeDashoffset = offset;
+            document.getElementById('progressNumber').textContent = attendance.length;
+
+            // Color based on completion
+            const circle = document.getElementById('progressCircle');
+            if (attendance.length >= adjustedQuota && adjustedQuota > 0) {
+                circle.style.stroke = 'var(--success)';
+            } else {
+                circle.style.stroke = 'var(--primary)';
+            }
+
+            // Update list
+            updateList(monthData);
+        }
+
+        function updateList(monthData) {
+            const list = document.getElementById('dateList');
+            const allEntries = [
+                ...(monthData.attendance || []).map(d => ({ date: d, type: 'attendance' })),
+                ...(monthData.exclusions || []).map(e => ({ date: e.date, type: e.type }))
+            ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (allEntries.length === 0) {
+                list.innerHTML = '<div class="empty-state">No entries yet this month</div>';
+                return;
+            }
+
+            list.innerHTML = allEntries.map(entry => `
+                <div class="date-item ${entry.type}">
+                    <div class="date-info">
+                        <span class="date-day">${formatDate(entry.date)}</span>
+                        <span class="date-type">${entry.type}</span>
+                    </div>
+                    <button class="delete-btn" onclick="deleteEntry('${entry.date}', '${entry.type}')">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        function checkInToday() {
+            const today = new Date().toISOString().split('T')[0];
+            const monthData = getCurrentMonthData();
+
+            if (monthData.attendance.includes(today)) {
+                showNotification('Already checked in today!', 'warning');
+                return;
+            }
+
+            monthData.attendance.push(today);
+            monthData.attendance.sort();
+            saveData();
+            updateUI();
+            showNotification('Checked in for today!');
+        }
+
+        function openModal(mode) {
+            modalMode = mode;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const typeSelector = document.getElementById('typeSelector');
+
+            if (mode === 'add') {
+                title.textContent = 'Add Past Attendance';
+                typeSelector.style.display = 'none';
+            } else {
+                title.textContent = 'Add Holiday or Vacation';
+                typeSelector.style.display = 'block';
+                selectType('holiday');
+            }
+
+            // Set default date to today
+            document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function selectType(type) {
+            selectedType = type;
+            document.querySelectorAll('.type-option').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-type="${type}"]`).classList.add('active');
+        }
+
+        function confirmAdd() {
+            const date = document.getElementById('dateInput').value;
+            if (!date) {
+                showNotification('Please select a date', 'error');
+                return;
+            }
+
+            const monthData = getCurrentMonthData();
+
+            if (modalMode === 'add') {
+                // Add attendance
+                if (monthData.attendance.includes(date)) {
+                    showNotification('Date already exists', 'error');
+                    return;
+                }
+                monthData.attendance.push(date);
+                monthData.attendance.sort();
+                showNotification('Attendance added');
+            } else {
+                // Add exclusion
+                if (monthData.exclusions.find(e => e.date === date)) {
+                    showNotification('Exclusion already exists for this date', 'error');
+                    return;
+                }
+                monthData.exclusions.push({ date, type: selectedType });
+                monthData.exclusions.sort((a, b) => a.date.localeCompare(b.date));
+                showNotification(`${selectedType.charAt(0).toUpperCase() + selectedType.slice(1)} added`);
+            }
+
+            saveData();
+            updateUI();
+            closeModal();
+        }
+
+        function deleteEntry(date, type) {
+            const monthData = getCurrentMonthData();
+
+            if (type === 'attendance') {
+                monthData.attendance = monthData.attendance.filter(d => d !== date);
+            } else {
+                monthData.exclusions = monthData.exclusions.filter(e => !(e.date === date && e.type === type));
+            }
+
+            saveData();
+            updateUI();
+            showNotification('Entry deleted');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+
+            if (type === 'error') {
+                notif.style.background = 'var(--danger)';
+            } else if (type === 'warning') {
+                notif.style.background = 'var(--warning)';
+            } else {
+                notif.style.background = 'var(--success)';
+            }
+
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        // Init
+        init();
+    </script>
 </body>
 </html>
+
